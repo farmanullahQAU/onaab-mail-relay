@@ -63,13 +63,26 @@ export async function handleRequest(req, res) {
           return;
         }
 
+        const attachments = Array.isArray(body.attachments) ? [...body.attachments] : [];
+        if (html && (html.includes('cid:onaab-logo-dark') || html.includes('https://onaab.com/brand/onaab-logo-dark.png')) && !attachments.some(a => a.cid === 'onaab-logo-dark')) {
+          attachments.push({
+            filename: 'onaab-logo.png',
+            path: 'https://onaab.com/brand/onaab-logo-dark.png',
+            cid: 'onaab-logo-dark',
+          });
+        }
+
+        // Replace remote logo URL with CID inline reference for clients
+        const processedHtml = html ? html.replace('https://onaab.com/brand/onaab-logo-dark.png', 'cid:onaab-logo-dark') : html;
+
         const info = await transporter.sendMail({
           from: from || `ONAAB <${SMTP_USER}>`,
           to,
           replyTo: replyTo || SMTP_USER,
           subject,
           text: text || '',
-          html: html || text,
+          html: processedHtml || text,
+          attachments,
         });
 
         console.log(`[Relay] Dispatched email to ${to} (Message ID: ${info.messageId})`);
