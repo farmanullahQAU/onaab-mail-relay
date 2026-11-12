@@ -1,0 +1,14 @@
+{
+  "name": "onaab-mail-relay",
+  "version": "1.0.0",
+  "description": "Secure HTTPS Mail Relay for ONAAB Store via Hostinger SMTP",
+  "main": "api/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node api/index.js",
+    "test": "node test.js"
+  },
+  "dependencies": {
+    "nodemailer": "^6.9.16"
+  }
+}
